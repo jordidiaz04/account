@@ -34,7 +34,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Mono<Account> findByNumber(String number) {
-        return findByClientDocumentNumber(number);
+        return findByNumber(number);
     }
 
     @Override
@@ -49,10 +49,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Mono<Account> delete(Integer id) {
-        return accountRepository.findById(id).map(account -> {
-           account.setStatus(false);
-           accountRepository.save(account);
-           return account;
-        });
+        return accountRepository.findById(id)
+                .map(account -> {
+                    account.setStatus(false);
+                    accountRepository.save(account).subscribe();
+                    return account;
+                });
     }
 }

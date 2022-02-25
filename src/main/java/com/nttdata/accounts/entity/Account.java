@@ -19,6 +19,6 @@ public class Account {
     private String number;
     private TypeAccount typeAccount;
     @Field(targetType = FieldType.DECIMAL128)
-    private BigDecimal balance;
-    private boolean status;
+    private BigDecimal balance = BigDecimal.valueOf(0);
+    private boolean status = true;
 }
