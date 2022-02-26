@@ -22,7 +22,7 @@ public class AccountController {
     }
 
     @GetMapping("/get/{id}")
-    public Mono<ResponseEntity<Account>> findById(@PathVariable int id) {
+    public Mono<ResponseEntity<Account>> findById(@PathVariable String id) {
         return accountService.findById(id)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
@@ -34,6 +34,15 @@ public class AccountController {
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/get/client/firstName/{firstName}/lastName/{lastName}")
+    public Mono<ResponseEntity<Account>> findByClientFirstNameAndLastName(@PathVariable String firstName,
+                                                                          @PathVariable String lastName) {
+        return accountService.findByClientFirstNameAndLastName(firstName, lastName)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
 
     @GetMapping("/get/client/documentNumber/{documentNumber}")
     public Mono<ResponseEntity<Account>> findByClientDocumentNumber(@PathVariable String documentNumber) {
@@ -61,7 +70,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public Mono<Account> delete(@PathVariable int id) {
+    public Mono<Account> delete(@PathVariable String id) {
         return accountService.delete(id);
     }
 }
