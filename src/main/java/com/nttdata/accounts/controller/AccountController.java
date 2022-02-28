@@ -1,5 +1,6 @@
 package com.nttdata.accounts.controller;
 
+import com.nttdata.accounts.dto.request.AccountRequest;
 import com.nttdata.accounts.entity.Account;
 import com.nttdata.accounts.service.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import javax.validation.Valid;
+import java.math.BigDecimal;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
@@ -43,7 +47,6 @@ public class AccountController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-
     @GetMapping("/get/client/documentNumber/{documentNumber}")
     public Mono<ResponseEntity<Account>> findByClientDocumentNumber(@PathVariable String documentNumber) {
         return accountService.findByClientDocumentNumber(documentNumber)
@@ -60,13 +63,15 @@ public class AccountController {
 
     @PostMapping("/create")
     @ResponseStatus(CREATED)
-    public void create(@RequestBody Account account) {
-        accountService.create(account);
+    public Mono<Account> create(@Valid @RequestBody AccountRequest request) {
+        Account account = new Account(request);
+        return accountService.create(account);
     }
 
-    @PutMapping("/update")
-    public Mono<Account> update(@RequestBody Account account) {
-        return accountService.update(account);
+    @PutMapping("/update/{id}/balance")
+    public Mono<Account> updateBalance(@PathVariable String id,
+                                       BigDecimal amount) {
+        return accountService.updateBalance(id, amount);
     }
 
     @DeleteMapping("/delete/{id}")

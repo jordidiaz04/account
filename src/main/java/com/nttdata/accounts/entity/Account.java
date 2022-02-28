@@ -1,6 +1,9 @@
 package com.nttdata.accounts.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.nttdata.accounts.dto.request.AccountRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,13 +16,14 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Document("account")
+@Document("accounts")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Account {
     @Id
+    @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
     private String number;
     private Client client;
@@ -29,4 +33,13 @@ public class Account {
     @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal balance = BigDecimal.valueOf(0);
     private boolean status = true;
+
+    public Account(AccountRequest request) {
+        number = request.getNumber();
+        client = request.getClient();
+        typeAccount = request.getTypeAccount();
+        holders = request.getHolders();
+        signatories = request.getSignatories();
+        balance = request.getBalance();
+    }
 }

@@ -1,6 +1,7 @@
 package com.nttdata.accounts.service;
 
 import com.nttdata.accounts.entity.Account;
+import com.nttdata.accounts.exceptions.customs.CustomInformationException;
 import com.nttdata.accounts.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
@@ -46,8 +47,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void create(Account account) {
-        accountRepository.insert(account).subscribe();
+    public Mono<Account> create(Account account) {
+        return accountRepository.findByNumber(account.getNumber())
+                .switchIfEmpty(accountRepository.insert(account)
+                        .map(x -> x))
+                .map(x -> {
+                    throw new CustomInformationException("Account number has already been created");
+                });
     }
 
     @Override
@@ -59,6 +65,7 @@ public class AccountServiceImpl implements AccountService {
     public Mono<Account> updateBalance(String id,
                                        BigDecimal amount) {
         return accountRepository.findById(new ObjectId(id))
+                .switchIfEmpty(Mono.error(new ClassNotFoundException("Not found account.")))
                 .flatMap(account -> {
                     account.setBalance(account.getBalance().add(amount));
                     return update(account);

@@ -2,14 +2,9 @@ package com.nttdata.accounts.repository;
 
 import com.nttdata.accounts.entity.Account;
 import lombok.RequiredArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import reactor.core.publisher.Mono;
-
-
-import java.math.BigDecimal;
 
 import static org.springframework.data.mongodb.core.query.Criteria.*;
 

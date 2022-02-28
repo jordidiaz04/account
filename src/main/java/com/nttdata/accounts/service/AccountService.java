@@ -13,7 +13,7 @@ public interface AccountService {
     Mono<Account> findByClientFirstNameAndLastName(String firstName, String lastName);
     Mono<Account> findByClientDocumentNumber(String documentNumber);
     Mono<Account> findByNumber(String number);
-    void create(Account account);
+    Mono<Account> create(Account account);
     Mono<Account> update(Account account);
     Mono<Account> updateBalance(String id, BigDecimal amount);
     Mono<Account> delete(String id);
