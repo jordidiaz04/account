@@ -14,7 +14,6 @@ public interface AccountService {
     Flux<Account> findByClientDocumentNumber(String documentNumber);
     Mono<Account> findByNumber(String number);
     Mono<Account> create(Account account);
-    Mono<Account> update(Account account);
     Mono<Account> updateBalance(String id, BigDecimal amount);
     Mono<Account> delete(String id);
 }

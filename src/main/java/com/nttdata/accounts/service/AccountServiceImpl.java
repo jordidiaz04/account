@@ -5,6 +5,8 @@ import com.nttdata.accounts.exceptions.customs.CustomInformationException;
 import com.nttdata.accounts.exceptions.customs.CustomNotFoundException;
 import com.nttdata.accounts.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -15,6 +17,8 @@ import java.math.BigDecimal;
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
+    private static final Logger logger = LogManager.getLogger(AccountServiceImpl.class);
+
     private static final String FLUX_NOT_FOUND_MESSAGE = "Data not found";
     private static final String MONO_NOT_FOUND_MESSAGE = "Account not found";
     private final AccountRepository accountRepository;
@@ -66,17 +70,18 @@ public class AccountServiceImpl implements AccountService {
                                 throw new CustomInformationException("The customer type can only have 1 account");
                             } else if (account.getClient().getType() == 2 && account.getTypeAccount().getOption() != 2) {
                                 throw new CustomInformationException("The type of client can only have current accounts");
+                            } else if (account.getClient().getType() == 2 && (account.getHolders() == null || account.getHolders().isEmpty())) {
+                                throw new CustomInformationException("The account type requires at least one owner");
                             } else {
                                 return a;
                             }
                         })
                         .then(Mono.just(account))
-                        .flatMap(accountRepository::save));
-    }
-
-    @Override
-    public Mono<Account> update(Account account) {
-        return accountRepository.save(account);
+                        .flatMap(a -> accountRepository.save(a)
+                                .map(b -> {
+                                    logger.info("Created a new id = {} for the account with number= {}", account.getId(), account.getNumber());
+                                    return b;
+                                })));
     }
 
     @Override
@@ -86,7 +91,8 @@ public class AccountServiceImpl implements AccountService {
                 .switchIfEmpty(Mono.error(new ClassNotFoundException("Not found account.")))
                 .flatMap(account -> {
                     account.setBalance(account.getBalance().add(amount));
-                    return update(account);
+                    logger.info("Update balance for the account with id = {}", account.getId());
+                    return accountRepository.save(account);
                 });
     }
 
@@ -95,7 +101,8 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findById(new ObjectId(id))
                 .flatMap(account -> {
                     account.setStatus(false);
-                    return update(account);
+                    logger.info("Delete the account with id = {}", account.getId());
+                    return accountRepository.save(account);
                 });
     }
 }
