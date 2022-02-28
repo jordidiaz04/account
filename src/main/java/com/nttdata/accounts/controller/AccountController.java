@@ -32,18 +32,18 @@ public class AccountController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/get/client/firstName/{firstName}")
+    @GetMapping(value = "/get/client/firstName/{firstName}", produces = TEXT_EVENT_STREAM_VALUE)
     public Flux<Account> findByClientFirstName(@PathVariable String firstName) {
         return accountService.findByClientFirstName(firstName);
     }
 
-    @GetMapping("/get/client/firstName/{firstName}/lastName/{lastName}")
+    @GetMapping(value = "/get/client/firstName/{firstName}/lastName/{lastName}", produces = TEXT_EVENT_STREAM_VALUE)
     public Flux<Account> findByClientFirstNameAndLastName(@PathVariable String firstName,
                                                           @PathVariable String lastName) {
         return accountService.findByClientFirstNameAndLastName(firstName, lastName);
     }
 
-    @GetMapping("/get/client/documentNumber/{documentNumber}")
+    @GetMapping(value = "/get/client/documentNumber/{documentNumber}", produces = TEXT_EVENT_STREAM_VALUE)
     public Flux<Account> findByClientDocumentNumber(@PathVariable String documentNumber) {
         return accountService.findByClientDocumentNumber(documentNumber);
     }
