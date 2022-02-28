@@ -4,7 +4,6 @@ import com.nttdata.accounts.dto.request.AccountRequest;
 import com.nttdata.accounts.entity.Account;
 import com.nttdata.accounts.service.AccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -26,10 +25,8 @@ public class AccountController {
     }
 
     @GetMapping("/get/{id}")
-    public Mono<ResponseEntity<Account>> findById(@PathVariable String id) {
-        return accountService.findById(id)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+    public Mono<Account> findById(@PathVariable String id) {
+        return accountService.findById(id);
     }
 
     @GetMapping(value = "/get/client/firstName/{firstName}", produces = TEXT_EVENT_STREAM_VALUE)
@@ -49,10 +46,8 @@ public class AccountController {
     }
 
     @GetMapping("/get/number/{number}")
-    public Mono<ResponseEntity<Account>> findByNumber(@PathVariable String number) {
-        return accountService.findByNumber(number)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+    public Mono<Account> findByNumber(@PathVariable String number) {
+        return accountService.findByNumber(number);
     }
 
     @PostMapping("/create")

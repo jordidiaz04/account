@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static org.springframework.data.mongodb.core.query.Criteria.*;
 
@@ -30,5 +31,11 @@ public class CustomAccountRepositoryImpl implements CustomAccountRepository {
     public Flux<Account> findByClientDocumentNumber(String documentNumber) {
         Query query = new Query(where("client.documentNumber").is(documentNumber));
         return mongoTemplate.find(query, Account.class);
+    }
+
+    @Override
+    public Mono<Long> countByClientDocumentNumber(String documentNumber) {
+        Query query = new Query(where("client.documentNumber").is(documentNumber));
+        return mongoTemplate.count(query, Account.class);
     }
 }

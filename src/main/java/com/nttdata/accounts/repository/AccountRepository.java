@@ -9,4 +9,5 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface AccountRepository extends ReactiveMongoRepository<Account, ObjectId>, CustomAccountRepository {
     Mono<Account> findByNumber(String number);
+    Mono<Long> countByClientDocumentNumber(String documentNumber);
 }
