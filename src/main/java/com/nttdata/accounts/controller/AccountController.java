@@ -33,25 +33,19 @@ public class AccountController {
     }
 
     @GetMapping("/get/client/firstName/{firstName}")
-    public Mono<ResponseEntity<Account>> findByClientFirstName(@PathVariable String firstName) {
-        return accountService.findByClientFirstName(firstName)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+    public Flux<Account> findByClientFirstName(@PathVariable String firstName) {
+        return accountService.findByClientFirstName(firstName);
     }
 
     @GetMapping("/get/client/firstName/{firstName}/lastName/{lastName}")
-    public Mono<ResponseEntity<Account>> findByClientFirstNameAndLastName(@PathVariable String firstName,
-                                                                          @PathVariable String lastName) {
-        return accountService.findByClientFirstNameAndLastName(firstName, lastName)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+    public Flux<Account> findByClientFirstNameAndLastName(@PathVariable String firstName,
+                                                          @PathVariable String lastName) {
+        return accountService.findByClientFirstNameAndLastName(firstName, lastName);
     }
 
     @GetMapping("/get/client/documentNumber/{documentNumber}")
-    public Mono<ResponseEntity<Account>> findByClientDocumentNumber(@PathVariable String documentNumber) {
-        return accountService.findByClientDocumentNumber(documentNumber)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+    public Flux<Account> findByClientDocumentNumber(@PathVariable String documentNumber) {
+        return accountService.findByClientDocumentNumber(documentNumber);
     }
 
     @GetMapping("/get/number/{number}")

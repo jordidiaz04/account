@@ -1,10 +1,10 @@
 package com.nttdata.accounts.repository;
 
 import com.nttdata.accounts.entity.Account;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 public interface CustomAccountRepository {
-    Mono<Account> findByClientFirstName(String firstName);
-    Mono<Account> findByClientFirstNameAndLastName(String firstName, String lastName);
-    Mono<Account> findByClientDocumentNumber(String documentNumber);
+    Flux<Account> findByClientFirstName(String firstName);
+    Flux<Account> findByClientFirstNameAndLastName(String firstName, String lastName);
+    Flux<Account> findByClientDocumentNumber(String documentNumber);
 }

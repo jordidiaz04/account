@@ -9,9 +9,9 @@ import java.math.BigDecimal;
 public interface AccountService {
     Flux<Account> findAll();
     Mono<Account> findById(String id);
-    Mono<Account> findByClientFirstName(String firstName);
-    Mono<Account> findByClientFirstNameAndLastName(String firstName, String lastName);
-    Mono<Account> findByClientDocumentNumber(String documentNumber);
+    Flux<Account> findByClientFirstName(String firstName);
+    Flux<Account> findByClientFirstNameAndLastName(String firstName, String lastName);
+    Flux<Account> findByClientDocumentNumber(String documentNumber);
     Mono<Account> findByNumber(String number);
     Mono<Account> create(Account account);
     Mono<Account> update(Account account);

@@ -27,17 +27,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Mono<Account> findByClientFirstName(String firstName) {
+    public Flux<Account> findByClientFirstName(String firstName) {
         return accountRepository.findByClientFirstName(firstName);
     }
 
     @Override
-    public Mono<Account> findByClientFirstNameAndLastName(String firstName, String lastName) {
+    public Flux<Account> findByClientFirstNameAndLastName(String firstName, String lastName) {
         return accountRepository.findByClientFirstNameAndLastName(firstName, lastName);
     }
 
     @Override
-    public Mono<Account> findByClientDocumentNumber(String documentNumber) {
+    public Flux<Account> findByClientDocumentNumber(String documentNumber) {
         return accountRepository.findByClientDocumentNumber(documentNumber);
     }
 
