@@ -17,5 +17,4 @@ public class Client {
     private String lastName;
     private String documentNumber;
     private int type;
-    private boolean active;
 }
