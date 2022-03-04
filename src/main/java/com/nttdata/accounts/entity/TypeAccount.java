@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class TypeAccount {
     private int option;
-    private Integer maxMoves;
+    private Integer maxTransactions;
     @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal maintenanceFee;
     private int day;

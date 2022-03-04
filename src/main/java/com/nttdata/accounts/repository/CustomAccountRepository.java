@@ -8,5 +8,5 @@ public interface CustomAccountRepository {
     Flux<Account> findByClientFirstName(String firstName);
     Flux<Account> findByClientFirstNameAndLastName(String firstName, String lastName);
     Flux<Account> findByClientDocumentNumber(String documentNumber);
-    Mono<Long> countByClientDocumentNumber(String documentNumber);
+    Mono<Long> countByClientDocumentNumberAndType(String documentNumber, Integer option);
 }

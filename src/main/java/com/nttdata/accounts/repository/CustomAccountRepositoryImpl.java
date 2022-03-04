@@ -34,8 +34,9 @@ public class CustomAccountRepositoryImpl implements CustomAccountRepository {
     }
 
     @Override
-    public Mono<Long> countByClientDocumentNumber(String documentNumber) {
-        Query query = new Query(where("client.documentNumber").is(documentNumber));
+    public Mono<Long> countByClientDocumentNumberAndType(String documentNumber, Integer option) {
+        Query query = new Query(where("client.documentNumber").is(documentNumber)
+                .and("typeAccount.option").is(option));
         return mongoTemplate.count(query, Account.class);
     }
 }

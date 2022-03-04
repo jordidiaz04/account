@@ -4,6 +4,7 @@ import com.nttdata.accounts.entity.Account;
 import com.nttdata.accounts.exceptions.customs.CustomInformationException;
 import com.nttdata.accounts.exceptions.customs.CustomNotFoundException;
 import com.nttdata.accounts.repository.AccountRepository;
+import com.nttdata.accounts.utilities.Validations;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.swing.text.Utilities;
 import java.math.BigDecimal;
 
 @Service
@@ -64,18 +66,8 @@ public class AccountServiceImpl implements AccountService {
                 .doOnNext(a -> {
                     throw new CustomInformationException("Account number has already been created");
                 })
-                .switchIfEmpty(accountRepository.countByClientDocumentNumber(account.getClient().getDocumentNumber())
-                        .map(a -> {
-                            if (account.getClient().getType() == 1 && a > 0) {
-                                throw new CustomInformationException("The customer type can only have 1 account");
-                            } else if (account.getClient().getType() == 2 && account.getTypeAccount().getOption() != 2) {
-                                throw new CustomInformationException("The type of client can only have current accounts");
-                            } else if (account.getClient().getType() == 2 && (account.getHolders() == null || account.getHolders().isEmpty())) {
-                                throw new CustomInformationException("The account type requires at least one owner");
-                            } else {
-                                return a;
-                            }
-                        })
+                .switchIfEmpty(accountRepository.countByClientDocumentNumberAndType(account.getClient().getDocumentNumber(), account.getTypeAccount().getOption())
+                        .map(a -> Validations.validateCreateAccount(a, account))
                         .then(Mono.just(account))
                         .flatMap(a -> accountRepository.save(a)
                                 .map(b -> {
