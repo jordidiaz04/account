@@ -59,7 +59,7 @@ public class AccountController {
 
     @PutMapping("/balance/{id}/amount/{amount}")
     public Mono<Account> updateBalance(@PathVariable String id,
-                                       BigDecimal amount) {
+                                       @PathVariable BigDecimal amount) {
         return accountService.updateBalance(id, amount);
     }
 

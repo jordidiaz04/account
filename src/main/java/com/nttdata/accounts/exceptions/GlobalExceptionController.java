@@ -22,6 +22,6 @@ public class GlobalExceptionController {
     public ResponseEntity<CustomResult> handle(CustomNotFoundException ex) {
         CustomResult customResult = new CustomResult();
         customResult.setMessage(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(customResult);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(customResult);
     }
 }

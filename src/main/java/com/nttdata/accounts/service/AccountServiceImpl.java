@@ -80,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
     public Mono<Account> updateBalance(String id,
                                        BigDecimal amount) {
         return accountRepository.findById(new ObjectId(id))
-                .switchIfEmpty(Mono.error(new ClassNotFoundException("Not found account.")))
+                .switchIfEmpty(Mono.error(new CustomNotFoundException("Not found account.")))
                 .flatMap(account -> {
                     account.setBalance(account.getBalance().add(amount));
                     logger.info("Update balance for the account with id = {}", account.getId());
