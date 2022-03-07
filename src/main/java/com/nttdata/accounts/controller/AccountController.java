@@ -16,6 +16,7 @@ import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/accounts")
 public class AccountController {
     private final AccountService accountService;
 

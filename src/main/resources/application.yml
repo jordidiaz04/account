@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: account
+    name: account-service
   config:
     import: optional:configserver:http://localhost:9000
   cloud:
