@@ -68,6 +68,18 @@ public class AccountServiceImpl implements AccountService {
                 })
                 .switchIfEmpty(accountRepository.countByClientDocumentNumberAndType(account.getClient().getDocumentNumber(), account.getTypeAccount().getOption())
                         .map(a -> Validations.validateCreateAccount(a, account))
+                        .flatMap(a -> {
+                        	
+                        	if((account.getClient().getType() == 1 && account.getClient().getProfile() == 2) ||
+                        	   (account.getClient().getType() == 2 && account.getClient().getProfile() == 3)){
+                        		
+                        		return Validations.consumeClientOwnsCreditCard(account.getClient().getDocumentNumber())
+                        		.switchIfEmpty(Mono.error( new CustomInformationException("The account type requires that the client owns a credit card")));
+                        	} else {
+                        	
+                        		return Mono.empty();
+                        	}
+                        })
                         .then(Mono.just(account))
                         .flatMap(a -> accountRepository.save(a)
                                 .map(b -> {
