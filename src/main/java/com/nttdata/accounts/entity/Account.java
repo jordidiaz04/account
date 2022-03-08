@@ -36,8 +36,8 @@ public class Account {
 
     public Account(AccountRequest request) {
         number = request.getNumber();
-        client = request.getClient();
-        typeAccount = request.getTypeAccount();
+        client = new Client(request.getClient());
+        typeAccount = new TypeAccount(request.getTypeAccount());
         holders = request.getHolders();
         signatories = request.getSignatories();
         balance = request.getBalance();
