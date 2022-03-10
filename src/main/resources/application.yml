@@ -17,3 +17,7 @@ management:
       enabled: 'true'
     restart:
       enabled: 'true'
+
+backend:
+  service:
+    credit: 'http://credit-service/credits'
