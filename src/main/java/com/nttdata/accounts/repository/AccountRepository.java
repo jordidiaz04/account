@@ -6,7 +6,11 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
+/**
+ * Account repository.
+ */
 @Repository
-public interface AccountRepository extends ReactiveMongoRepository<Account, ObjectId>, CustomAccountRepository {
-    Mono<Account> findByNumber(String number);
+public interface AccountRepository extends ReactiveMongoRepository<Account, ObjectId>,
+    CustomAccountRepository {
+  Mono<Account> findByNumber(String number);
 }
