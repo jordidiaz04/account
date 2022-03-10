@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+  account-server:
+    container_name: account-server
+    build: .
+    restart: always
+    depends_on:
+      - mongo_db
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker"
+    ports:
+      - "8081:8081"
+  mongo_db:
+    image: "mongo:5.0.1"
+    restart: always
+    ports:
+      - "27020:27017"
+networks:
+  default:
+    name: custom-network
