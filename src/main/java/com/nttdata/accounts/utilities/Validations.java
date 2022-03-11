@@ -21,7 +21,7 @@ public class Validations {
       throw new
           CustomInformationException("The type of client can only have 1 account of this type");
     } else if (account.getClient().getType() == Constants.ClientType.BUSINESS
-        && account.getTypeAccount().getOption() != Constants.AccountType.CHECKING) {
+        && account.getTypeAccount().getOption() != Constants.AccountType.CHECKING && count > 0) {
       throw new
           CustomInformationException("The type of client can only have multiple current accounts");
     } else if (account.getClient().getType() == Constants.ClientType.BUSINESS

@@ -20,4 +20,4 @@ management:
 
 backend:
   service:
-    credit: 'http://credit-service/credits'
+    credit: 'http://credits/credits'

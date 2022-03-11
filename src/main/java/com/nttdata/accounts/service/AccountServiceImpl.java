@@ -75,9 +75,11 @@ public class AccountServiceImpl implements AccountService {
             .map(a -> Validations.validateCreateAccount(a, account))
             .flatMap(a -> {
 
-              if ((account.getClient().getType() == 1 && account.getClient().getProfile() == 2)
+              if ((account.getClient().getType() == 1 && account.getClient().getProfile() == 2 
+                  && account.getTypeAccount().getOption() == 1)
                   || (account.getClient().getType() == 2
-                  && account.getClient().getProfile() == 3)) {
+                  && account.getClient().getProfile() == 2
+                  && account.getTypeAccount().getOption() == 2)) {
 
                 return creditService.consumeClientOwnsCreditCard(
                         account.getClient().getDocumentNumber())
