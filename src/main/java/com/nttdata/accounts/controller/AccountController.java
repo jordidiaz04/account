@@ -39,6 +39,12 @@ public class AccountController {
     return Mono.just(description);
   }
 
+  @GetMapping(value = "/get/client/documentNumber/{documentNumber}",
+      produces = TEXT_EVENT_STREAM_VALUE)
+  public Flux<Account> findByClientDocumentNumber(@PathVariable String documentNumber) {
+    return accountService.findByClientDocumentNumber(documentNumber);
+  }
+
   @GetMapping("/get/number/{number}")
   public Mono<Account> findByNumber(@PathVariable String number) {
     return accountService.findByNumber(number);
@@ -78,12 +84,6 @@ public class AccountController {
   public Flux<Account> findByClientFirstNameAndLastName(@PathVariable String firstName,
                                                         @PathVariable String lastName) {
     return accountService.findByClientFirstNameAndLastName(firstName, lastName);
-  }
-
-  @GetMapping(value = "/get/client/documentNumber/{documentNumber}",
-      produces = TEXT_EVENT_STREAM_VALUE)
-  public Flux<Account> findByClientDocumentNumber(@PathVariable String documentNumber) {
-    return accountService.findByClientDocumentNumber(documentNumber);
   }
 
   @DeleteMapping("/delete/{id}")
