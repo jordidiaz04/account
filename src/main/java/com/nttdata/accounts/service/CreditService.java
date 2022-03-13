@@ -8,4 +8,6 @@ import reactor.core.publisher.Mono;
  */
 public interface CreditService {
   Mono<CreditResponse> consumeClientOwnsCreditCard(String number);
+
+  Mono<Boolean> checkIfClientHasDebts(String documentNumber);
 }

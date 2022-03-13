@@ -18,6 +18,16 @@ public class Constants {
   }
 
   /**
+   * Client types.
+   */
+  @NoArgsConstructor(access = AccessLevel.PRIVATE)
+  public static final class ClientProfile {
+    public static final int REGULAR = 1;
+    public static final int VIP = 2;
+    public static final int PYME = 3;
+  }
+
+  /**
    * Account types.
    */
   @NoArgsConstructor(access = AccessLevel.PRIVATE)

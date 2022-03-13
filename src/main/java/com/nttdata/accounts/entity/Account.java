@@ -27,14 +27,15 @@ public class Account {
   @Id
   @JsonSerialize(using = ToStringSerializer.class)
   private ObjectId id;
+  private String debitCard;
   private String number;
   private Client client;
   private TypeAccount typeAccount;
   private List<String> holders;
   private List<String> signatories;
   @Field(targetType = FieldType.DECIMAL128)
-  private BigDecimal balance = BigDecimal.valueOf(0);
-  private boolean status = true;
+  private BigDecimal balance;
+  private boolean status;
 
   /**
    * Return account from an AccountRequest.
@@ -42,11 +43,13 @@ public class Account {
    * @param request AccountRequest object
    */
   public Account(AccountRequest request) {
+    debitCard = request.getDebitCard();
     number = request.getNumber();
     client = new Client(request.getClient());
     typeAccount = new TypeAccount(request.getTypeAccount());
     holders = request.getHolders();
     signatories = request.getSignatories();
     balance = request.getBalance();
+    status = true;
   }
 }

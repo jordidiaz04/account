@@ -3,10 +3,12 @@ package com.nttdata.accounts.controller;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
 
+import com.nttdata.accounts.dto.request.AccountRequest;
+import com.nttdata.accounts.entity.Account;
+import com.nttdata.accounts.service.AccountService;
 import java.math.BigDecimal;
-
 import javax.validation.Valid;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,12 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.nttdata.accounts.dto.request.AccountRequest;
-import com.nttdata.accounts.entity.Account;
-import com.nttdata.accounts.service.AccountService;
-
-import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -34,14 +30,33 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/accounts")
 public class AccountController {
   private final AccountService accountService;
-  
-  
+
   @Value("${application.config.description}")
   private String description;
+
   @GetMapping("/test")
   public Mono<String> find() {
-      return Mono.just(description);
+    return Mono.just(description);
   }
+
+  @GetMapping("/get/number/{number}")
+  public Mono<Account> findByNumber(@PathVariable String number) {
+    return accountService.findByNumber(number);
+  }
+
+  @PostMapping("/create")
+  @ResponseStatus(CREATED)
+  public Mono<Account> create(@Valid @RequestBody AccountRequest request) {
+    Account account = new Account(request);
+    return accountService.create(account);
+  }
+
+  @PutMapping("/balance/{id}/amount/{amount}")
+  public Mono<Account> updateBalance(@PathVariable String id,
+                                     @PathVariable BigDecimal amount) {
+    return accountService.updateBalance(id, amount);
+  }
+
 
   @GetMapping(value = "/get/all", produces = TEXT_EVENT_STREAM_VALUE)
   public Flux<Account> findAll() {
@@ -69,24 +84,6 @@ public class AccountController {
       produces = TEXT_EVENT_STREAM_VALUE)
   public Flux<Account> findByClientDocumentNumber(@PathVariable String documentNumber) {
     return accountService.findByClientDocumentNumber(documentNumber);
-  }
-
-  @GetMapping("/get/number/{number}")
-  public Mono<Account> findByNumber(@PathVariable String number) {
-    return accountService.findByNumber(number);
-  }
-
-  @PostMapping("/create")
-  @ResponseStatus(CREATED)
-  public Mono<Account> create(@Valid @RequestBody AccountRequest request) {
-    Account account = new Account(request);
-    return accountService.create(account);
-  }
-
-  @PutMapping("/balance/{id}/amount/{amount}")
-  public Mono<Account> updateBalance(@PathVariable String id,
-                                     @PathVariable BigDecimal amount) {
-    return accountService.updateBalance(id, amount);
   }
 
   @DeleteMapping("/delete/{id}")

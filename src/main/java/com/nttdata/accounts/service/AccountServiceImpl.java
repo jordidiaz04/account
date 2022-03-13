@@ -4,6 +4,7 @@ import com.nttdata.accounts.entity.Account;
 import com.nttdata.accounts.exceptions.customs.CustomInformationException;
 import com.nttdata.accounts.exceptions.customs.CustomNotFoundException;
 import com.nttdata.accounts.repository.AccountRepository;
+import com.nttdata.accounts.utilities.Constants;
 import com.nttdata.accounts.utilities.Validations;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
@@ -66,50 +67,34 @@ public class AccountServiceImpl implements AccountService {
   @Override
   public Mono<Account> create(Account account) {
     return accountRepository.findByNumber(account.getNumber())
-        .doOnNext(a -> {
+        .doOnNext(ac -> {
           throw new CustomInformationException("Account number has already been created");
         })
         .switchIfEmpty(accountRepository
             .countByClientDocumentNumberAndType(account.getClient().getDocumentNumber(),
                 account.getTypeAccount().getOption())
-            .map(a -> Validations.validateCreateAccount(a, account))
-            .flatMap(a -> {
-
-              if ((account.getClient().getType() == 1 && account.getClient().getProfile() == 2 
-                  && account.getTypeAccount().getOption() == 1)
-                  || (account.getClient().getType() == 2
-                  && account.getClient().getProfile() == 2
-                  && account.getTypeAccount().getOption() == 2)) {
-
-                return creditService.consumeClientOwnsCreditCard(
-                        account.getClient().getDocumentNumber())
-                    .switchIfEmpty(
-                        Mono.error(new CustomInformationException("The account type requires "
-                            + "that the client owns a credit card")));
-              } else {
-
-                return Mono.empty();
-              }
-            })
-            .then(Mono.just(account))
-            .flatMap(a -> accountRepository.save(a)
-                .map(b -> {
+            .flatMap(co -> Validations.validateCreateAccount(co, account))
+            .flatMap(this::checkIfRequiresCrediCard)
+            .flatMap(this::checkIfHasDebt)
+            .flatMap(ac -> accountRepository.save(ac)
+                .map(c -> {
                   logger.info("Created a new id = {} for the account with number= {}",
                       account.getId(), account.getNumber());
-                  return b;
-                })));
+                  return c;
+                }))
+        );
   }
 
   @Override
   public Mono<Account> updateBalance(String id,
                                      BigDecimal amount) {
     return accountRepository.findById(new ObjectId(id))
-        .switchIfEmpty(Mono.error(new CustomNotFoundException("Not found account.")))
         .flatMap(account -> {
           account.setBalance(account.getBalance().add(amount));
           logger.info("Update balance for the account with id = {}", account.getId());
           return accountRepository.save(account);
-        });
+        })
+        .switchIfEmpty(Mono.error(new CustomNotFoundException(MONO_NOT_FOUND_MESSAGE)));
   }
 
   @Override
@@ -119,6 +104,36 @@ public class AccountServiceImpl implements AccountService {
           account.setStatus(false);
           logger.info("Delete the account with id = {}", account.getId());
           return accountRepository.save(account);
+        });
+  }
+
+  private Mono<Account> checkIfRequiresCrediCard(Account account) {
+    if ((account.getClient().getType() == Constants.ClientType.PERSONAL
+        && account.getClient().getProfile() == Constants.ClientProfile.VIP
+        && account.getTypeAccount().getOption() == Constants.AccountType.SAVING)
+        || (account.getClient().getType() == Constants.ClientType.BUSINESS
+        && account.getClient().getProfile() == Constants.ClientProfile.PYME
+        && account.getTypeAccount().getOption() == Constants.AccountType.CHECKING)) {
+      return creditService.consumeClientOwnsCreditCard(
+              account.getClient().getDocumentNumber())
+          .switchIfEmpty(
+              Mono.error(new CustomInformationException("The account type requires "
+                  + "that the client owns a credit card")))
+          .flatMap(cr -> Mono.just(account));
+    } else {
+      return Mono.just(account);
+    }
+  }
+
+  private Mono<Account> checkIfHasDebt(Account account) {
+    return creditService.checkIfClientHasDebts(account.getClient().getDocumentNumber())
+        .flatMap(res -> {
+          if (Boolean.TRUE.equals(res)) {
+            return Mono.error(new CustomInformationException("You cannot create an account "
+                + "because you have a credit debt"));
+          } else {
+            return Mono.just(account);
+          }
         });
   }
 }

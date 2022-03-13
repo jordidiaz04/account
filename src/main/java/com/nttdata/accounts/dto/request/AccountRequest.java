@@ -5,11 +5,10 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.FieldType;
 
 /**
  * Account object.
@@ -18,6 +17,8 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountRequest {
+  @NotBlank(message = "Field debitCard must be required")
+  private String debitCard;
   @NotBlank(message = "Field number must be required")
   private String number;
   @Valid
@@ -26,8 +27,8 @@ public class AccountRequest {
   private TypeAccountRequest typeAccount;
   private List<String> holders;
   private List<String> signatories;
+  @NotNull(message = "Field balance must be required")
   @Min(value = 0, message = "The minimum balance must be 0")
-  @Field(targetType = FieldType.DECIMAL128)
-  private BigDecimal balance = BigDecimal.valueOf(0);
+  private BigDecimal balance;
   private boolean status = true;
 }

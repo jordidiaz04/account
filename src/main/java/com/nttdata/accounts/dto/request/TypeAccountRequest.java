@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
 public class TypeAccountRequest {
   @NotNull(message = "Field option for typeAccount must be required")
   private Integer option;
+  private BigDecimal maintenance;
   private Integer maxTransactions;
-  private BigDecimal maintenanceFee;
-  @NotNull(message = "Field tax for typeAccount must be required")
-  private BigDecimal tax;
+  @NotNull(message = "Field commission for typeAccount must be required")
+  private BigDecimal commission;
   private Integer day;
 }

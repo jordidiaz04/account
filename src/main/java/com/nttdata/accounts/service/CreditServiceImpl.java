@@ -31,4 +31,14 @@ public class CreditServiceImpl implements CreditService {
         .map(credit -> credit)
         .switchIfEmpty(Mono.empty());
   }
+
+  @Override
+  public Mono<Boolean> checkIfClientHasDebts(String documentNumber) {
+    return webClient
+        .build()
+        .get()
+        .uri(urlCredit + "/check/debts/{documentNumber}", documentNumber)
+        .retrieve()
+        .bodyToMono(Boolean.class);
+  }
 }

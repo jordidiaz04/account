@@ -19,9 +19,9 @@ import org.bson.types.ObjectId;
 public class Client {
   @JsonSerialize(using = ToStringSerializer.class)
   private ObjectId id;
+  private String documentNumber;
   private String firstName;
   private String lastName;
-  private String documentNumber;
   private int type;
   private int profile;
 
@@ -32,9 +32,9 @@ public class Client {
    */
   public Client(ClientRequest request) {
     id = new ObjectId(request.getId());
+    documentNumber = request.getDocumentNumber();
     firstName = request.getFirstName();
     lastName = request.getLastName();
-    documentNumber = request.getDocumentNumber();
     type = request.getType();
     profile = request.getProfile();
   }

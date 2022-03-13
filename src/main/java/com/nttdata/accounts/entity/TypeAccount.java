@@ -18,11 +18,11 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TypeAccount {
   private int option;
+  @Field(targetType = FieldType.DECIMAL128)
+  private BigDecimal maintenance;
   private Integer maxTransactions;
   @Field(targetType = FieldType.DECIMAL128)
-  private BigDecimal maintenanceFee;
-  @Field(targetType = FieldType.DECIMAL128)
-  private BigDecimal tax;
+  private BigDecimal commission;
   private Integer day;
 
   /**
@@ -33,8 +33,8 @@ public class TypeAccount {
   public TypeAccount(TypeAccountRequest request) {
     option = request.getOption();
     maxTransactions = request.getMaxTransactions();
-    maintenanceFee = request.getMaintenanceFee();
-    tax = request.getTax();
+    maintenance = request.getMaintenance();
+    commission = request.getCommission();
     day = request.getDay();
   }
 }
