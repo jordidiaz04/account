@@ -18,7 +18,7 @@ public class Constants {
   }
 
   /**
-   * Client types.
+   * Client profiles.
    */
   @NoArgsConstructor(access = AccessLevel.PRIVATE)
   public static final class ClientProfile {
