@@ -70,18 +70,19 @@ public class AccountServiceImpl implements AccountService {
         .doOnNext(ac -> {
           throw new CustomInformationException("Account number has already been created");
         })
-        .switchIfEmpty(accountRepository
-            .countByClientDocumentNumberAndType(account.getClient().getDocumentNumber(),
-                account.getTypeAccount().getOption())
-            .flatMap(co -> Validations.validateCreateAccount(co, account))
-            .flatMap(this::checkIfRequiresCrediCard)
-            .flatMap(this::checkIfHasDebt)
-            .flatMap(ac -> accountRepository.save(ac)
-                .map(c -> {
-                  logger.info("Created a new id = {} for the account with number= {}",
-                      account.getId(), account.getNumber());
-                  return c;
-                }))
+        .switchIfEmpty(Validations.validateFields(account)
+            .flatMap(a -> accountRepository
+                .countByClientDocumentNumberAndType(account.getClient().getDocumentNumber(),
+                    account.getTypeAccount().getOption())
+                .flatMap(co -> Validations.validateCreateAccount(co, account))
+                .flatMap(this::checkIfRequiresCrediCard)
+                .flatMap(this::checkIfHasDebt)
+                .flatMap(ac -> accountRepository.save(ac)
+                    .map(c -> {
+                      logger.info("Created a new id = {} for the account with number= {}",
+                          account.getId(), account.getNumber());
+                      return c;
+                    })))
         );
   }
 
