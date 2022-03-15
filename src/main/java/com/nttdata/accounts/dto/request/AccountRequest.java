@@ -28,7 +28,7 @@ public class AccountRequest {
   private List<String> holders;
   private List<String> signatories;
   @NotNull(message = "Field balance must be required")
-  @Min(value = 0, message = "The minimum balance must be 0")
+  @Min(value = 0, message = "Field balance must be at least 0")
   private BigDecimal balance;
   private boolean status = true;
 }

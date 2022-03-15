@@ -30,32 +30,21 @@ public class AccountServiceImpl implements AccountService {
   private final CreditService creditService;
 
   @Override
-  public Flux<Account> findAll() {
-    return accountRepository.findAll();
+  public Flux<Account> findByClientDocumentNumber(String documentNumber) {
+    return accountRepository.findByClientDocumentNumber(documentNumber)
+        .switchIfEmpty(Flux.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
+  }
+
+  @Override
+  public Flux<Account> findByDebitCard(String debitCard) {
+    return accountRepository.findByDebitCard(debitCard)
+        .switchIfEmpty(Flux.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
   }
 
   @Override
   public Mono<Account> findById(String id) {
     return accountRepository.findById(new ObjectId(id))
         .switchIfEmpty(Mono.error(new CustomNotFoundException(MONO_NOT_FOUND_MESSAGE)));
-  }
-
-  @Override
-  public Flux<Account> findByClientFirstName(String firstName) {
-    return accountRepository.findByClientFirstName(firstName)
-        .switchIfEmpty(Flux.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
-  }
-
-  @Override
-  public Flux<Account> findByClientFirstNameAndLastName(String firstName, String lastName) {
-    return accountRepository.findByClientFirstNameAndLastName(firstName, lastName)
-        .switchIfEmpty(Flux.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
-  }
-
-  @Override
-  public Flux<Account> findByClientDocumentNumber(String documentNumber) {
-    return accountRepository.findByClientDocumentNumber(documentNumber)
-        .switchIfEmpty(Flux.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
   }
 
   @Override
@@ -75,8 +64,9 @@ public class AccountServiceImpl implements AccountService {
                 .countByClientDocumentNumberAndType(account.getClient().getDocumentNumber(),
                     account.getTypeAccount().getOption())
                 .flatMap(co -> Validations.validateCreateAccount(co, account))
-                .flatMap(this::checkIfRequiresCrediCard)
+                .flatMap(this::checkIfRequiresCreditCard)
                 .flatMap(this::checkIfHasDebt)
+                .flatMap(this::setPosition)
                 .flatMap(ac -> accountRepository.save(ac)
                     .map(c -> {
                       logger.info("Created a new id = {} for the account with number= {}",
@@ -98,17 +88,7 @@ public class AccountServiceImpl implements AccountService {
         .switchIfEmpty(Mono.error(new CustomNotFoundException(MONO_NOT_FOUND_MESSAGE)));
   }
 
-  @Override
-  public Mono<Account> delete(String id) {
-    return accountRepository.findById(new ObjectId(id))
-        .flatMap(account -> {
-          account.setStatus(false);
-          logger.info("Delete the account with id = {}", account.getId());
-          return accountRepository.save(account);
-        });
-  }
-
-  private Mono<Account> checkIfRequiresCrediCard(Account account) {
+  private Mono<Account> checkIfRequiresCreditCard(Account account) {
     if ((account.getClient().getType() == Constants.ClientType.PERSONAL
         && account.getClient().getProfile() == Constants.ClientProfile.VIP
         && account.getTypeAccount().getOption() == Constants.AccountType.SAVING)
@@ -135,6 +115,44 @@ public class AccountServiceImpl implements AccountService {
           } else {
             return Mono.just(account);
           }
+        });
+  }
+
+  private Mono<Account> setPosition(Account account) {
+    return accountRepository.getLastByDebitCard(account.getDebitCard())
+        .map(ac -> {
+          int pos = ac.getPosition() + 1;
+          account.setPosition(pos);
+          return account;
+        })
+        .switchIfEmpty(Mono.just(account));
+  }
+
+
+  @Override
+  public Flux<Account> findAll() {
+    return accountRepository.findAll();
+  }
+
+  @Override
+  public Flux<Account> findByClientFirstName(String firstName) {
+    return accountRepository.findByClientFirstName(firstName)
+        .switchIfEmpty(Flux.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
+  }
+
+  @Override
+  public Flux<Account> findByClientFirstNameAndLastName(String firstName, String lastName) {
+    return accountRepository.findByClientFirstNameAndLastName(firstName, lastName)
+        .switchIfEmpty(Flux.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
+  }
+
+  @Override
+  public Mono<Account> delete(String id) {
+    return accountRepository.findById(new ObjectId(id))
+        .flatMap(account -> {
+          account.setStatus(false);
+          logger.info("Delete the account with id = {}", account.getId());
+          return accountRepository.save(account);
         });
   }
 }

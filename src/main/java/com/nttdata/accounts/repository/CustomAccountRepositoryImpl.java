@@ -1,9 +1,11 @@
 package com.nttdata.accounts.repository;
 
+import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 import com.nttdata.accounts.entity.Account;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Flux;
@@ -41,5 +43,13 @@ public class CustomAccountRepositoryImpl implements CustomAccountRepository {
     Query query = new Query(where("client.documentNumber").is(documentNumber)
         .and("typeAccount.option").is(option));
     return mongoTemplate.count(query, Account.class);
+  }
+
+  @Override
+  public Mono<Account> getLastByDebitCard(String debitCard) {
+    Query query = new Query(where("debitCard").is(debitCard));
+    query.limit(1);
+    query.with(Sort.by(DESC, "position"));
+    return mongoTemplate.findOne(query, Account.class);
   }
 }

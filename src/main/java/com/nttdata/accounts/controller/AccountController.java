@@ -41,8 +41,14 @@ public class AccountController {
 
   @GetMapping(value = "/get/client/documentNumber/{documentNumber}",
       produces = TEXT_EVENT_STREAM_VALUE)
-  public Flux<Account> findByClientDocumentNumber(@PathVariable String documentNumber) {
+  public Flux<Account> listByClientDocumentNumber(@PathVariable String documentNumber) {
     return accountService.findByClientDocumentNumber(documentNumber);
+  }
+
+  @GetMapping(value = "/get/debitCard/{debitCard}",
+      produces = TEXT_EVENT_STREAM_VALUE)
+  public Flux<Account> listByDebitCard(@PathVariable String debitCard) {
+    return accountService.findByDebitCard(debitCard);
   }
 
   @GetMapping("/get/number/{number}")

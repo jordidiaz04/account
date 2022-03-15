@@ -64,12 +64,16 @@ public class Validations {
   }
 
   private static void validateForCheckingAccount(Account account) {
-    if (account.getTypeAccount().getMaintenance() == null) {
-      throw new CustomInformationException("Field maintenance for typeAccount "
-          + "must be required");
-    } else if (account.getTypeAccount().getMaintenance().compareTo(BigDecimal.ZERO) <= 0) {
-      throw new CustomInformationException("Field maintenance for typeAccount "
-          + "must be greater than 0");
+    if (account.getClient().getProfile() == Constants.ClientProfile.PYME) {
+      account.getTypeAccount().setMaintenance(null);
+    } else {
+      if (account.getTypeAccount().getMaintenance() == null) {
+        throw new CustomInformationException("Field maintenance for typeAccount "
+            + "must be required");
+      } else if (account.getTypeAccount().getMaintenance().compareTo(BigDecimal.ZERO) <= 0) {
+        throw new CustomInformationException("Field maintenance for typeAccount "
+            + "must be greater than 0");
+      }
     }
     account.getTypeAccount().setMaxTransactions(null);
   }

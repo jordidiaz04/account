@@ -29,6 +29,7 @@ public class Account {
   private ObjectId id;
   private String debitCard;
   private String number;
+  private int position;
   private Client client;
   private TypeAccount typeAccount;
   private List<String> holders;
@@ -45,6 +46,7 @@ public class Account {
   public Account(AccountRequest request) {
     debitCard = request.getDebitCard();
     number = request.getNumber();
+    position = 1;
     client = new Client(request.getClient());
     typeAccount = new TypeAccount(request.getTypeAccount());
     holders = request.getHolders();

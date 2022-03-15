@@ -11,13 +11,15 @@ import reactor.core.publisher.Mono;
 public interface AccountService {
   Flux<Account> findAll();
 
-  Mono<Account> findById(String id);
-
   Flux<Account> findByClientFirstName(String firstName);
 
   Flux<Account> findByClientFirstNameAndLastName(String firstName, String lastName);
 
   Flux<Account> findByClientDocumentNumber(String documentNumber);
+
+  Flux<Account> findByDebitCard(String documentNumber);
+
+  Mono<Account> findById(String id);
 
   Mono<Account> findByNumber(String number);
 
