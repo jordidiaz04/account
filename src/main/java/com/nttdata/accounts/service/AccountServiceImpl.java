@@ -54,6 +54,14 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
+  public Mono<BigDecimal> getTotalBalanceByDebitCard(String debitCard) {
+    return accountRepository.findByDebitCard(debitCard)
+        .map(Account::getBalance)
+        .reduce(BigDecimal.ZERO, BigDecimal::add)
+        .switchIfEmpty(Mono.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
+  }
+
+  @Override
   public Mono<Account> create(Account account) {
     return accountRepository.findByNumber(account.getNumber())
         .doOnNext(ac -> {

@@ -56,6 +56,11 @@ public class AccountController {
     return accountService.findByNumber(number);
   }
 
+  @GetMapping("/get/totalBalance/{debitCard}")
+  public Mono<BigDecimal> getTotalBalanceByDebitCard(@PathVariable String debitCard) {
+    return accountService.getTotalBalanceByDebitCard(debitCard);
+  }
+
   @PostMapping("/create")
   @ResponseStatus(CREATED)
   public Mono<Account> create(@Valid @RequestBody AccountRequest request) {
@@ -68,6 +73,8 @@ public class AccountController {
                                      @PathVariable BigDecimal amount) {
     return accountService.updateBalance(id, amount);
   }
+
+
 
 
   @GetMapping(value = "/get/all", produces = TEXT_EVENT_STREAM_VALUE)

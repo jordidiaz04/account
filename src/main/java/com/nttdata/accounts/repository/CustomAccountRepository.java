@@ -14,6 +14,8 @@ public interface CustomAccountRepository {
 
   Flux<Account> findByClientDocumentNumber(String documentNumber);
 
+  Flux<Account> findByDebitCard(String debitCard);
+
   Mono<Long> countByClientDocumentNumberAndType(String documentNumber, Integer option);
 
   Mono<Account> getLastByDebitCard(String debitCard);

@@ -1,5 +1,6 @@
 package com.nttdata.accounts.repository;
 
+import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -35,6 +36,13 @@ public class CustomAccountRepositoryImpl implements CustomAccountRepository {
   @Override
   public Flux<Account> findByClientDocumentNumber(String documentNumber) {
     Query query = new Query(where("client.documentNumber").is(documentNumber));
+    return mongoTemplate.find(query, Account.class);
+  }
+
+  @Override
+  public Flux<Account> findByDebitCard(String debitCard) {
+    Query query = new Query(where("debitCard").is(debitCard));
+    query.with(Sort.by(ASC, "position"));
     return mongoTemplate.find(query, Account.class);
   }
 
