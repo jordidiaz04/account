@@ -96,6 +96,16 @@ public class AccountServiceImpl implements AccountService {
         .switchIfEmpty(Mono.error(new CustomNotFoundException(MONO_NOT_FOUND_MESSAGE)));
   }
 
+  @Override
+  public Mono<Account> delete(String id) {
+    return accountRepository.findById(new ObjectId(id))
+        .flatMap(account -> {
+          account.setStatus(false);
+          logger.info("Delete the account with id = {}", account.getId());
+          return accountRepository.save(account);
+        });
+  }
+
   private Mono<Account> checkIfRequiresCreditCard(Account account) {
     if ((account.getClient().getType() == Constants.ClientType.PERSONAL
         && account.getClient().getProfile() == Constants.ClientProfile.VIP
@@ -154,13 +164,4 @@ public class AccountServiceImpl implements AccountService {
         .switchIfEmpty(Flux.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
   }
 
-  @Override
-  public Mono<Account> delete(String id) {
-    return accountRepository.findById(new ObjectId(id))
-        .flatMap(account -> {
-          account.setStatus(false);
-          logger.info("Delete the account with id = {}", account.getId());
-          return accountRepository.save(account);
-        });
-  }
 }

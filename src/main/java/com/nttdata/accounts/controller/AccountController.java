@@ -9,7 +9,6 @@ import com.nttdata.accounts.service.AccountService;
 import java.math.BigDecimal;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,14 +30,6 @@ import reactor.core.publisher.Mono;
 public class AccountController {
   private final AccountService accountService;
 
-  @Value("${application.config.description}")
-  private String description;
-
-  @GetMapping("/test")
-  public Mono<String> find() {
-    return Mono.just(description);
-  }
-
   @GetMapping(value = "/get/client/documentNumber/{documentNumber}",
       produces = TEXT_EVENT_STREAM_VALUE)
   public Flux<Account> listByClientDocumentNumber(@PathVariable String documentNumber) {
@@ -49,6 +40,11 @@ public class AccountController {
       produces = TEXT_EVENT_STREAM_VALUE)
   public Flux<Account> listByDebitCard(@PathVariable String debitCard) {
     return accountService.findByDebitCard(debitCard);
+  }
+
+  @GetMapping("/get/{id}")
+  public Mono<Account> findById(@PathVariable String id) {
+    return accountService.findById(id);
   }
 
   @GetMapping("/get/number/{number}")
@@ -74,33 +70,27 @@ public class AccountController {
     return accountService.updateBalance(id, amount);
   }
 
-
+  @DeleteMapping("/delete/{id}")
+  public Mono<Account> delete(@PathVariable String id) {
+    return accountService.delete(id);
+  }
 
 
   @GetMapping(value = "/get/all", produces = TEXT_EVENT_STREAM_VALUE)
-  public Flux<Account> findAll() {
+  public Flux<Account> listAll() {
     return accountService.findAll();
   }
 
-  @GetMapping("/get/{id}")
-  public Mono<Account> findById(@PathVariable String id) {
-    return accountService.findById(id);
-  }
 
   @GetMapping(value = "/get/client/firstName/{firstName}", produces = TEXT_EVENT_STREAM_VALUE)
-  public Flux<Account> findByClientFirstName(@PathVariable String firstName) {
+  public Flux<Account> listByClientFirstName(@PathVariable String firstName) {
     return accountService.findByClientFirstName(firstName);
   }
 
   @GetMapping(value = "/get/client/firstName/{firstName}/lastName/{lastName}",
       produces = TEXT_EVENT_STREAM_VALUE)
-  public Flux<Account> findByClientFirstNameAndLastName(@PathVariable String firstName,
+  public Flux<Account> listByClientFirstNameAndLastName(@PathVariable String firstName,
                                                         @PathVariable String lastName) {
     return accountService.findByClientFirstNameAndLastName(firstName, lastName);
-  }
-
-  @DeleteMapping("/delete/{id}")
-  public Mono<Account> delete(@PathVariable String id) {
-    return accountService.delete(id);
   }
 }
