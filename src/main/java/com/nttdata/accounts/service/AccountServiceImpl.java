@@ -30,8 +30,25 @@ public class AccountServiceImpl implements AccountService {
   private final CreditService creditService;
 
   @Override
+  public Flux<Account> findAll() {
+    return accountRepository.findAll();
+  }
+
+  @Override
   public Flux<Account> findByClientDocumentNumber(String documentNumber) {
     return accountRepository.findByClientDocumentNumber(documentNumber)
+        .switchIfEmpty(Flux.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
+  }
+
+  @Override
+  public Flux<Account> findByClientFirstName(String firstName) {
+    return accountRepository.findByClientFirstName(firstName)
+        .switchIfEmpty(Flux.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
+  }
+
+  @Override
+  public Flux<Account> findByClientFirstNameAndLastName(String firstName, String lastName) {
+    return accountRepository.findByClientFirstNameAndLastName(firstName, lastName)
         .switchIfEmpty(Flux.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
   }
 
@@ -111,8 +128,7 @@ public class AccountServiceImpl implements AccountService {
         && account.getClient().getProfile() == Constants.ClientProfile.VIP
         && account.getTypeAccount().getOption() == Constants.AccountType.SAVING)
         || (account.getClient().getType() == Constants.ClientType.BUSINESS
-        && account.getClient().getProfile() == Constants.ClientProfile.PYME
-        && account.getTypeAccount().getOption() == Constants.AccountType.CHECKING)) {
+        && account.getClient().getProfile() == Constants.ClientProfile.PYME)) {
       return creditService.consumeClientOwnsCreditCard(
               account.getClient().getDocumentNumber())
           .switchIfEmpty(
@@ -145,23 +161,4 @@ public class AccountServiceImpl implements AccountService {
         })
         .switchIfEmpty(Mono.just(account));
   }
-
-
-  @Override
-  public Flux<Account> findAll() {
-    return accountRepository.findAll();
-  }
-
-  @Override
-  public Flux<Account> findByClientFirstName(String firstName) {
-    return accountRepository.findByClientFirstName(firstName)
-        .switchIfEmpty(Flux.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
-  }
-
-  @Override
-  public Flux<Account> findByClientFirstNameAndLastName(String firstName, String lastName) {
-    return accountRepository.findByClientFirstNameAndLastName(firstName, lastName)
-        .switchIfEmpty(Flux.error(new CustomNotFoundException(FLUX_NOT_FOUND_MESSAGE)));
-  }
-
 }
