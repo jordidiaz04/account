@@ -309,18 +309,8 @@ class AccountServiceTest {
 
   @Test
   void testCreatePersonalRegularSaving() {
-    Client client = new Client();
-    client.setId(new ObjectId());
-    client.setDocumentNumber("71489282");
-    client.setFirstName("Juan");
-    client.setLastName("Perez");
-    client.setType(Constants.ClientType.PERSONAL);
-    client.setProfile(Constants.ClientProfile.REGULAR);
-
-    TypeAccount typeAccount = new TypeAccount();
-    typeAccount.setOption(Constants.AccountType.SAVING);
-    typeAccount.setMaxTransactions(5);
-    typeAccount.setCommission(BigDecimal.valueOf(3));
+    Client client = new Client(new ObjectId(), "71489282", "Juan", "Perez", Constants.ClientType.PERSONAL, Constants.ClientProfile.REGULAR);
+    TypeAccount typeAccount = new TypeAccount(Constants.AccountType.SAVING, null, 5, BigDecimal.valueOf(3), null);
 
     Account account = new Account();
     account.setPosition(1);
@@ -698,7 +688,6 @@ class AccountServiceTest {
     account.setTypeAccount(typeAccount);
     account.setBalance(BigDecimal.ZERO);
 
-    var monoAccount = Mono.just(account);
     when(accountRepository.findByNumber("1234567890")).thenReturn(Mono.empty());
     when(accountRepository.countByClientDocumentNumberAndType("71489282", Constants.AccountType.SAVING)).thenReturn(Mono.just(1L));
 
@@ -733,7 +722,6 @@ class AccountServiceTest {
     account.setTypeAccount(typeAccount);
     account.setBalance(BigDecimal.ZERO);
 
-    var monoAccount = Mono.just(account);
     when(accountRepository.findByNumber("1234567890")).thenReturn(Mono.empty());
     when(accountRepository.countByClientDocumentNumberAndType("71489282", Constants.AccountType.SAVING)).thenReturn(Mono.just(1L));
 
@@ -769,7 +757,6 @@ class AccountServiceTest {
     account.setTypeAccount(typeAccount);
     account.setBalance(BigDecimal.ZERO);
 
-    var monoAccount = Mono.just(account);
     when(accountRepository.findByNumber("1234567890")).thenReturn(Mono.empty());
     when(accountRepository.countByClientDocumentNumberAndType("71489282", Constants.AccountType.CHECKING)).thenReturn(Mono.just(1L));
 
@@ -808,7 +795,6 @@ class AccountServiceTest {
     account.setHolders(holders);
     account.setBalance(BigDecimal.ZERO);
 
-    var monoAccount = Mono.just(account);
     when(accountRepository.findByNumber("1234567890")).thenReturn(Mono.empty());
     when(accountRepository.countByClientDocumentNumberAndType("71489282", Constants.AccountType.CHECKING)).thenReturn(Mono.just(1L));
 
