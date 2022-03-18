@@ -202,6 +202,40 @@ class AccountsApplicationTests {
   }
 
   @Test
+  void testCreateError() {
+    Client client = new Client();
+    client.setId(new ObjectId());
+    client.setDocumentNumber("71489282");
+    client.setLastName("Perez");
+    client.setType(1);
+    client.setProfile(1);
+
+    TypeAccount typeAccount = new TypeAccount();
+    typeAccount.setOption(1);
+    typeAccount.setMaxTransactions(5);
+    typeAccount.setCommission(BigDecimal.valueOf(3));
+
+    Account account = new Account();
+    account.setPosition(1);
+    account.setNumber("1234567890");
+    account.setDebitCard("4420652012504888");
+    account.setClient(client);
+    account.setTypeAccount(typeAccount);
+    account.setBalance(BigDecimal.ZERO);
+
+    Mono<Account> monoAccount = Mono.just(account);
+
+    var responseBody = webTestClient
+        .post()
+        .uri("/accounts/create")
+        .contentType(APPLICATION_JSON)
+        .accept(APPLICATION_JSON)
+        .body(Mono.just(account), Account.class)
+        .exchange()
+        .expectStatus().isBadRequest();
+  }
+
+  @Test
   void testUpdateBalance() {
     ObjectId id = new ObjectId();
 
