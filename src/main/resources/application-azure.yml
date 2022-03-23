@@ -9,3 +9,9 @@ eureka:
   client:
     service-url:
       defaultZone: https://bootcamp-eurekaserver.azurewebsites.net/eureka
+  instance:
+    hostname: bootcamp-accounts.azurewebsites.net
+    secure-port-enabled: true
+    nonsecure-port-enabled: false
+    nonSecurePort: 80
+    securePort: 443
