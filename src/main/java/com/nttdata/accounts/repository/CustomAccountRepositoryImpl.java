@@ -17,6 +17,8 @@ import reactor.core.publisher.Mono;
  */
 @RequiredArgsConstructor
 public class CustomAccountRepositoryImpl implements CustomAccountRepository {
+  private static final String FIELD_CLIENT_DOCUMENTNUMBER = "client.documentNumber";
+
   private final ReactiveMongoTemplate mongoTemplate;
 
   @Override
@@ -35,7 +37,7 @@ public class CustomAccountRepositoryImpl implements CustomAccountRepository {
 
   @Override
   public Flux<Account> findByClientDocumentNumber(String documentNumber) {
-    Query query = new Query(where("client.documentNumber").is(documentNumber));
+    Query query = new Query(where(FIELD_CLIENT_DOCUMENTNUMBER).is(documentNumber));
     return mongoTemplate.find(query, Account.class);
   }
 
@@ -47,8 +49,15 @@ public class CustomAccountRepositoryImpl implements CustomAccountRepository {
   }
 
   @Override
+  public Mono<Account> findByNumberAndClientDocumentNumber(String number, String documentNumber) {
+    Query query = new Query(where("number").is(number)
+        .and(FIELD_CLIENT_DOCUMENTNUMBER).is(documentNumber));
+    return mongoTemplate.findOne(query, Account.class);
+  }
+
+  @Override
   public Mono<Long> countByClientDocumentNumberAndType(String documentNumber, Integer option) {
-    Query query = new Query(where("client.documentNumber").is(documentNumber)
+    Query query = new Query(where(FIELD_CLIENT_DOCUMENTNUMBER).is(documentNumber)
         .and("typeAccount.option").is(option));
     return mongoTemplate.count(query, Account.class);
   }

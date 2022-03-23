@@ -71,6 +71,12 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
+  public Mono<Account> findByNumberAndClientDocumentNumber(String number, String documentNumber) {
+    return accountRepository.findByNumberAndClientDocumentNumber(number, documentNumber)
+        .switchIfEmpty(Mono.error(new CustomNotFoundException(MONO_NOT_FOUND_MESSAGE)));
+  }
+
+  @Override
   public Mono<BigDecimal> getTotalBalanceByDebitCard(String debitCard) {
     return accountRepository.findByDebitCard(debitCard)
         .map(Account::getBalance)

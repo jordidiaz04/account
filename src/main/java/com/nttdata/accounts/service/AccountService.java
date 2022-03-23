@@ -23,6 +23,8 @@ public interface AccountService {
 
   Mono<Account> findByNumber(String number);
 
+  Mono<Account> findByNumberAndClientDocumentNumber(String number, String documentNumber);
+
   Mono<BigDecimal> getTotalBalanceByDebitCard(String debitCard);
 
   Mono<Account> create(Account account);
