@@ -15,3 +15,4 @@ eureka:
     nonsecure-port-enabled: false
     nonSecurePort: 80
     securePort: 443
+    instanceId: ${eureka.instance.hostname}:${spring.application.name}:443
