@@ -1,6 +1,6 @@
 spring:
   config:
-    import: optional:configserver:https://bootcamp-configserver.azurewebsites.net
+    import: optional:configserver:https://bootcamp-configserver.azurewebsites.net/
   cloud:
     config:
       profile: prod

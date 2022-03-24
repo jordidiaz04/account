@@ -9,7 +9,6 @@ import com.nttdata.accounts.service.AccountService;
 import java.math.BigDecimal;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,18 +29,6 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/accounts")
 public class AccountController {
   private final AccountService accountService;
-
-  @Value("${spring.data.mongodb.database}")
-  private String database;
-  @Value("${spring.data.mongodb.port}")
-  private String port;
-  @Value("${spring.data.mongodb.host}")
-  private String host;
-
-  @GetMapping("test")
-  public String test(){
-    return host + ":" + port + "/" + database;
-  }
 
   @GetMapping(value = "/get/client/documentNumber/{documentNumber}",
       produces = TEXT_EVENT_STREAM_VALUE)
