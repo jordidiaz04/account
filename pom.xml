@@ -78,6 +78,21 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <active.profile>local</active.profile>
+            </properties>
+        </profile>
+        <profile>
+            <id>azure</id>
+            <properties>
+                <active.profile>azure</active.profile>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
