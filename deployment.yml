@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: account-service-app
+  labels:
+    app: account-service-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: account-service-app
+  template:
+    metadata:
+      labels:
+        app: account-service-app
+    spec:
+      containers:
+        - name: account-service-app
+          image: jordidiaz495/account-service:1.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: account-cm
+                  key: active_profile
+            - name: SPRING_CLOUD_CONFIG_PROFILE
+              valueFrom:
+                configMapKeyRef:
+                  name: account-cm
+                  key: config_profile
