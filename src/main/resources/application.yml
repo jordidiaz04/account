@@ -2,10 +2,10 @@ server:
   port: '8081'
 
 spring:
-  profiles:
-    active: @activatedProperties@
   application:
     name: account-service
+  profiles:
+    active: ${PROFILE:dev}
 
 management:
   endpoints:

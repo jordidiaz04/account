@@ -5,7 +5,7 @@ metadata:
   labels:
     app: account-service-app
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: account-service-app
@@ -21,13 +21,15 @@ spec:
           ports:
             - containerPort: 8081
           env:
-            - name: SPRING_PROFILES_ACTIVE
+            - name: PROFILE
+              value: prod
+            - name: EUREKA_DEFAULT_ZONE
               valueFrom:
                 configMapKeyRef:
-                  name: account-cm
-                  key: active_profile
-            - name: SPRING_CLOUD_CONFIG_PROFILE
+                  name: eureka-cm
+                  key: eureka_default_zone
+            - name: CONFIG_SERVER_SVC
               valueFrom:
                 configMapKeyRef:
-                  name: account-cm
-                  key: config_profile
+                  name: eureka-cm
+                  key: config_server_svc
