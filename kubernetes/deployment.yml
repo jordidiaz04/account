@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: account-service-app
-          image: jordidiaz495/account-service:1.0
+          image: ${REPOSITORY_NAME}.azurecr.io/${APP_NAME}:${IMAGE_TAG}
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
